@@ -4,7 +4,7 @@
 	import Header from './Header.svelte'
 	import Service from './Service.svelte'
 
-	const apiURL = "http://localhost:8889/gocore"
+	const apiURL = "/gocore"
 	let data = []
 	
 	async function getData() {

@@ -10,6 +10,7 @@
   let address = "";
   let serviceName = "";
   let uptime = "";
+  let lastHeartbeat = ""
   let colour = "panel-danger";
 
   beforeUpdate(function() {
@@ -19,14 +20,16 @@
     uptime = humanTime(
       new Date().getTime() - new Date(json.startTime).getTime()
     );
-
+    
     const lastHeartbeatMillis =
       new Date().getTime() - new Date(json._ts).getTime();
-    if (lastHeartbeatMillis < 5000) {
+    if (lastHeartbeatMillis < 30000) {
       colour = "panel-success";
     } else {
       colour = "panel-danger";
     }
+
+    lastHeartbeat = humanTime(lastHeartbeatMillis)
   });
 </script>
 
@@ -52,9 +55,10 @@
           <label title="">
             {serviceName}
             <div style="font-size: 0.8em;">
-              <div>{address}</div>
+              <div>Listening on {address}</div>
               <div>{host}</div>
-              <div>{uptime}</div>
+              <div>Up for {uptime}</div>
+              <div>Last heatbeat {lastHeartbeat} ago</div>
             </div>
 
           </label>
