@@ -4,7 +4,7 @@
   import Header from './Header.svelte'
   import Service from './Service.svelte'
 
-  const apiURL = '/gocore'
+  const apiURL = '_api_url_set_by_rollup_'
   let data = []
 
   async function getData() {
