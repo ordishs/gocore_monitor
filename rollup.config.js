@@ -16,7 +16,7 @@ export default {
     file: 'public/build/bundle.js'
   },
   plugins: [
-    replace({ _api_url_set_by_rollup_: production ? '/gocore' : 'http://localhost:8889/gocore' }),
+    replace({ _api_url_set_by_rollup_: production ? '/api' : 'http://localhost:8889/api' }),
     svelte({
       // enable run-time checks when not in production
       dev: !production,

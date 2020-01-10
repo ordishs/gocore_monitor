@@ -6,10 +6,26 @@
 
   const apiURL = '_api_url_set_by_rollup_'
   let data = []
+  let filter = ''
+  let filteredData = []
+
+  $: filteredData = data.filter(d => {
+    return (d.serviceName + d.host + d.context).includes(filter)
+  })
 
   async function getData() {
     const response = await fetch(apiURL)
     return await response.json()
+  }
+
+  function handleFilterMessage(e) {
+    filter = e.detail.filter
+  }
+
+  function getFilteredData() {
+    return data.filter(d => {
+      return d.serviceName.includes(filter)
+    })
   }
 
   onMount(function() {
@@ -39,10 +55,10 @@
 </svelte:head>
 
 <main style="margin-top: 6rem;">
-  <Header />
+  <Header on:message={handleFilterMessage} />
 
   <div class="container">
-    {#each data as d}
+    {#each filteredData as d}
       <Service {removeMe} json={d} />
     {/each}
   </div>

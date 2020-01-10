@@ -12,6 +12,7 @@
   let uptime = ''
   let lastHeartbeat = ''
   let colour = 'panel-danger'
+  let removeButton = false
 
   beforeUpdate(function() {
     host = json.host
@@ -23,10 +24,15 @@
 
     const lastHeartbeatMillis =
       new Date().getTime() - new Date(json._ts).getTime()
-    if (lastHeartbeatMillis < 30000) {
+    if (lastHeartbeatMillis < 30 * 1000) {
       colour = 'panel-success'
+      removeButton = false
+    } else if (lastHeartbeatMillis < 60 * 60 * 1000) {
+      colour = 'panel-warning'
+      removeButton = false
     } else {
       colour = 'panel-danger'
+      removeButton = true
     }
 
     lastHeartbeat = humanTime(lastHeartbeatMillis)
@@ -35,44 +41,51 @@
 
 <style>
   pre {
-    max-height: 100px;
+    max-height: 120px;
     overflow-y: scroll;
     background-color: white;
     border: none;
     padding: 0;
+  }
+
+  button {
+    background: none;
+    border: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 4px;
   }
 </style>
 
 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6" style="padding: 5px;">
   <div class="panel {colour}">
     <div class="panel-heading">
+      {#if removeButton}
+        <button on:click={removeMe(json)}>
+          <span class="glyphicon glyphicon-remove" />
+        </button>
+      {/if}
+
       <div class="row">
-        <div class="checkbox title">
-          <label title="">
+        <div class="checkbox">
+          <label>
             {serviceName}
             <div style="font-size: 0.8em;">
               <div>Listening on {address}</div>
               <div>{host}</div>
-              <div>Up for {uptime}</div>
+              <div>Started {uptime} ago</div>
               <div>Last heatbeat {lastHeartbeat} ago</div>
             </div>
-
           </label>
         </div>
       </div>
     </div>
+
     <div class="panel-body">
       <pre style="font-size: 0.7em;">
         {JSON.stringify(filterJSON(json), null, 2)}
       </pre>
-
-    </div>
-    <div class="panel-footer">
-      <div role="toolbar" class="btn-toolbar">
-        <button class="btn btn-sm btn-danger" on:click={removeMe(json)}>
-          <span class="glyphicon glyphicon-remove" />
-        </button>
-      </div>
     </div>
   </div>
 </div>
