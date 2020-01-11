@@ -74,7 +74,7 @@
             <div style="font-size: 0.8em;">
               <div>Listening on {address}</div>
               <div>{host}</div>
-              <div>Started {uptime} ago</div>
+              <div>Up {uptime}</div>
               <div>Last heatbeat {lastHeartbeat} ago</div>
             </div>
           </label>
