@@ -18,16 +18,6 @@
     return await response.json()
   }
 
-  function handleFilterMessage(e) {
-    filter = e.detail.filter
-  }
-
-  function getFilteredData() {
-    return data.filter(d => {
-      return d.serviceName.includes(filter)
-    })
-  }
-
   onMount(function() {
     setInterval(async () => {
       data = await getData()
@@ -55,7 +45,7 @@
 </svelte:head>
 
 <main style="margin-top: 6rem;">
-  <Header on:message={handleFilterMessage} />
+  <Header bind:filter />
 
   <div class="container">
     {#each filteredData as d}

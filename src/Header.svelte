@@ -1,11 +1,5 @@
 <script>
-  import { createEventDispatcher } from 'svelte'
-
-  const dispatch = createEventDispatcher()
-
-  function handleChange(e) {
-    dispatch('message', { filter: e.target.value })
-  }
+  export let filter = ''
 </script>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -22,7 +16,7 @@
             type="text"
             placeholder="Filter..."
             class="form-control"
-            on:input={handleChange} />
+            bind:value={filter} />
         </div>
       </form>
     </div>
