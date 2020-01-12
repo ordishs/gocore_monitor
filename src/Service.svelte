@@ -3,6 +3,7 @@
   import { humanTime, filterJSON } from './utils'
 
   export let json = {}
+  export let details = false
 
   export let removeMe
 
@@ -56,6 +57,10 @@
     right: 0;
     margin: 4px;
   }
+
+  .panel {
+    margin-bottom: 0;
+  }
 </style>
 
 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6" style="padding: 5px;">
@@ -81,11 +86,12 @@
         </div>
       </div>
     </div>
-
-    <div class="panel-body">
-      <pre style="font-size: 0.7em;">
-        {JSON.stringify(filterJSON(json), null, 2)}
-      </pre>
-    </div>
+    {#if details}
+      <div class="panel-body">
+        <pre style="font-size: 0.7em;">
+          {JSON.stringify(filterJSON(json), null, 2)}
+        </pre>
+      </div>
+    {/if}
   </div>
 </div>

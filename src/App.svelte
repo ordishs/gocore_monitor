@@ -3,24 +3,51 @@
 
   import Header from './Header.svelte'
   import Service from './Service.svelte'
+  import Spinner from 'svelte-spinner'
 
   const apiURL = '_api_url_set_by_rollup_'
+  let banner = 'Loading data from gocore_server at ' + apiURL
   let data = []
   let filter = ''
+  let details = false
   let filteredData = []
+  let goodComms = true
 
   $: filteredData = data.filter(d => {
-    return (d.serviceName + d.host + d.context).includes(filter)
+    const searchText = `${d.serviceName}|${d.host}|${d.context}|${d.commit}|${d.address}`
+    const terms = filter.trim().split(/\s+/) // Split by one or more spaces
+
+    for (let i = 0; i < terms.length; i++) {
+      if (!searchText.includes(terms[i])) {
+        return false
+      }
+    }
+    return true
   })
 
-  async function getData() {
-    const response = await fetch(apiURL)
-    return await response.json()
+  async function getDataWithTimeout(url, timeoutMillis = 5000) {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMillis)
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        signal: controller.signal
+      })
+      goodComms = true
+      return await response.json()
+    } catch (err) {
+      goodComms = false
+      throw err
+    } finally {
+      clearTimeout(timeoutId)
+      banner = ''
+    }
   }
 
   onMount(function() {
     setInterval(async () => {
-      data = await getData()
+      data = await getDataWithTimeout(apiURL)
     }, 2000)
   })
 
@@ -28,12 +55,45 @@
     try {
       const url = `${apiURL}/${json.host}/${json.address}/${json.serviceName}`
       await fetch(url, { method: 'delete' })
-      data = await getData()
+      data = await getDataWithTimeout(apiURL)
     } catch (err) {
       console.log(err)
     }
   }
 </script>
+
+<style>
+  main {
+    margin-top: 51px;
+  }
+
+  .outer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    z-index: 9999;
+  }
+  .popup {
+    /* display: flex; */
+    /* align-items: center; */
+    margin-bottom: 100px;
+  }
+
+  .spinwrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  #msg {
+    padding: 60px;
+  }
+</style>
 
 <svelte:head>
   <link
@@ -44,12 +104,38 @@
     href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
 </svelte:head>
 
-<main style="margin-top: 6rem;">
-  <Header bind:filter />
+<main>
+  {#if banner}
+    <div class="outer">
+      <div class="popup">
+        <div>{banner}</div>
+        <div class="spinwrap">
+          <Spinner
+            size="50"
+            speed="750"
+            color="#A82124"
+            thickness="2"
+            gap="40" />
+        </div>
+
+      </div>
+    </div>
+  {/if}
+
+  <Header bind:filter bind:details />
 
   <div class="container">
     {#each filteredData as d}
-      <Service {removeMe} json={d} />
+      <Service {removeMe} json={d} {details} />
     {/each}
+
+    {#if !goodComms}
+      <div class="outer">
+        <div class="popup bg-danger">
+          <div id="msg">Cannot connect to gocore_server on {apiURL}</div>
+        </div>
+      </div>
+    {/if}
+
   </div>
 </main>
