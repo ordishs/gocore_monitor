@@ -7,7 +7,13 @@
   label {
     color: #9d9d9d;
     font-weight: normal;
+    margin-left: 20px;
     margin-right: 10px;
+  }
+
+  input {
+    autocapitalize: off;
+    autocorrect: off;
   }
 </style>
 
@@ -30,7 +36,7 @@
           </label>
 
           <input
-            type="text"
+            type="search"
             placeholder="Filter tokens..."
             class="form-control"
             bind:value={filter} />

@@ -7,6 +7,11 @@ import replace from '@rollup/plugin-replace'
 
 const production = !process.env.ROLLUP_WATCH
 
+let apiURL = '/api'
+if (!production) {
+  apiURL = process.env.API_URL || 'http://localhost:8889/api'
+}
+
 export default {
   input: 'src/main.js',
   output: {
@@ -16,7 +21,7 @@ export default {
     file: 'public/build/bundle.js'
   },
   plugins: [
-    replace({ _api_url_set_by_rollup_: production ? '/api' : 'http://localhost:8889/api' }),
+    replace({ _api_url_set_by_rollup_: apiURL }),
     svelte({
       // enable run-time checks when not in production
       dev: !production,

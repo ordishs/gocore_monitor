@@ -63,7 +63,7 @@
   }
 </style>
 
-<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6" style="padding: 5px;">
+<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" style="padding: 5px;">
   <div class="panel {colour}">
     <div class="panel-heading">
       {#if removeButton}

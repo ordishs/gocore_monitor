@@ -64,7 +64,13 @@
 
 <style>
   main {
-    margin-top: 51px;
+    margin-top: 160px;
+  }
+
+  @media (min-width: 768px) {
+    main {
+      margin-top: 51px;
+    }
   }
 
   .outer {
@@ -124,7 +130,7 @@
 
   <Header bind:filter bind:details />
 
-  <div class="container">
+  <div class="container-fluid">
     {#each filteredData as d}
       <Service {removeMe} json={d} {details} />
     {/each}
