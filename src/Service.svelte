@@ -25,7 +25,7 @@
 
     const lastHeartbeatMillis =
       new Date().getTime() - new Date(json._ts).getTime()
-    if (lastHeartbeatMillis < 30 * 1000) {
+    if (lastHeartbeatMillis < 45 * 1000) {
       colour = 'panel-success'
       removeButton = false
     } else if (lastHeartbeatMillis < 60 * 60 * 1000) {
